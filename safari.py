@@ -254,6 +254,11 @@ def process(groups):
 
         topics = get_LDA_for_tokens(reduce(add, alldocs))
         groups[query]['LDA Topics'] = [{'tfidf': topics}]
+
+        for url in groups[query].keys():
+            if len(groups[query][url]) > 0 and groups[query][url][0].has_key('html'):
+                del groups[query][url][0]['tokens']
+                del groups[query][url][0]['html']
     return groups
 
 if __name__ == '__main__':
