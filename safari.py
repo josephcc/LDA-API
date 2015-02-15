@@ -233,12 +233,27 @@ def _index():
     groups = process(groups)
     return json.dumps(groups)
 
+@app.route('/tokenize', methods=['POST'])
+def _tok():
+    data = json.loads(request.form['data'])
+    html = data['html']
+    print len(html)
+    vector = dict(Counter(get_tokens(clean_html(html))))
+    return json.dumps({'vector': vector})
+
+def vector2tokens(vector):
+    out = []
+    for word, freq in vector.items():
+        for _ in range(freq):
+            out.append(word)
+    return out
+
 @app.route('/searchInfo', methods=['POST'])
 def _searchInfo():
     data = json.loads(request.form['data'])
-    htmls = data['htmls']
-    tokenss = [get_tokens(clean_html(html)) for html in htmls]
+    vectors = data['vectors']
 
+    tokenss = map(vector2tokens, vectors)
 
     IDF = get_IDF_for_sources(tokenss)
     topics, vector = get_LDA_for_tokens(reduce(add, tokenss))
