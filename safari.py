@@ -177,6 +177,7 @@ def get_LDA_for_tokens(tokens):
     bow = doc2bow(tokens)
     topics = lda[bow]
     topics.sort(key=itemgetter(1), reverse=True)
+    topic_vector = map(itemgetter(1), lda.__getitem__(bow, eps=-1))
     out_lda = ''
     print '\t  lda:'
     for tid, prob in topics[:4]:
@@ -186,7 +187,7 @@ def get_LDA_for_tokens(tokens):
         out_lda += ('%.3f*topic%d:' % (prob, tid))
         out_lda += lda.print_topic(tid, topn=5)
         out_lda += '\n'
-    return out_lda
+    return out_lda, topic_vector
 
 def get_TFIDF_for_tokens(tokens, IDF, isTF=False):
     tabnames = 0
@@ -224,12 +225,30 @@ from flask import Flask, request
 import cPickle as pickle
 app = Flask(__name__)
 app.debug = True
+
 @app.route('/', methods=['POST'])
-def hello():
+def _index():
     groups = json.loads(request.data)
     # query -> url -> [0] -> html
     groups = process(groups)
     return json.dumps(groups)
+
+@app.route('/searchInfo', methods=['POST'])
+def _searchInfo():
+    data = json.loads(request.form['data'])
+    htmls = data['htmls']
+    tokenss = [get_tokens(clean_html(html)) for html in htmls]
+
+
+    IDF = get_IDF_for_sources(tokenss)
+    topics, vector = get_LDA_for_tokens(reduce(add, tokenss))
+
+    tfidfs = []
+    for tokens in tokenss:
+        tfidf = get_TFIDF_for_tokens(tokens, IDF)
+        tfidfs.append(tfidf)
+
+    return json.dumps({'tfidfs': tfidfs, 'lda': topics, 'lda_vector': vector})
 
 def process(groups):
     for query in groups.keys():
@@ -252,7 +271,7 @@ def process(groups):
                 tfidf = get_TFIDF_for_tokens(source, IDF)
                 source = groups[query][url][0]['tfidf'] = tfidf
 
-        topics = get_LDA_for_tokens(reduce(add, alldocs))
+        topics, vector = get_LDA_for_tokens(reduce(add, alldocs))
         groups[query]['LDA Topics'] = [{'tfidf': topics}]
 
         for url in groups[query].keys():
