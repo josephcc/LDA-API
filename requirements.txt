@@ -9,9 +9,7 @@ html2text==2015.2.18
 itsdangerous==0.24
 lxml==2.3.6
 nltk==3.0.1
-numpy==1.9.1
 readability-lxml==0.3.0.5
-scipy==0.15.1
 six==1.9.0
 wsgiref==0.1.2
 numpy==1.8.1
