@@ -1,5 +1,5 @@
 # coding: utf-8
-import pdb 
+#import pdb 
 
 import math
 import string
@@ -7,12 +7,13 @@ import cPickle as pickle
 from operator import *
 from collections import Counter
 
-from ScriptingBridge import *
-from Foundation import *
+#from ScriptingBridge import *
+#from Foundation import *
 
 import nltk
-from nltk.corpus import stopwords
-stopwords = stopwords.words('english')
+#from nltk.corpus import stopwords
+#stopwords = stopwords.words('english')
+stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
 from nltk.tokenize.punkt import PunktWordTokenizer
 
 import numpy as np
@@ -220,7 +221,7 @@ def run2():
     get_TFIDF(Web1T_TF, isTF=True)
 
 import json
-import pdb
+#import pdb
 from flask import Flask, request
 import cPickle as pickle
 app = Flask(__name__)
