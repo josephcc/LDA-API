@@ -206,7 +206,7 @@ def get_TFIDF_for_tokens(tokens, IDF, isTF=False):
             TFIDF[token] = tf * IDF[token]
     keywords = sorted(TFIDF.items(), key=itemgetter(1), reverse=True)[:16]
     keywords = ['%.2f*%s' % (p, w) for w, p in keywords]
-    print '\t  tfidf: ' + ', '.join(keywords)
+    print ('\t  tfidf: ' + ', '.join(keywords)).encode('utf8')
     out_tfidf =  ', '.join(keywords)
 
 
