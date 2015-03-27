@@ -11,9 +11,9 @@ from collections import Counter
 #from Foundation import *
 
 import nltk
-#from nltk.corpus import stopwords
-#stopwords = stopwords.words('english')
-stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
+from nltk.corpus import stopwords
+stopwords = stopwords.words('english')
+#stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
 from nltk.tokenize.punkt import PunktWordTokenizer
 
 import numpy as np
@@ -266,6 +266,18 @@ def _searchInfo():
 
     return json.dumps({'tfidfs': tfidfs, 'lda': topics, 'lda_vector': vector})
 
+@app.route('/lda', methods=['POST'])
+def _lda():
+    data = json.loads(request.form['data'])
+    html = data['html']
+    print len(html)
+    tokens = get_tokens(clean_html(html))
+    topics, topic_vector = get_LDA_for_tokens(tokens)
+    size = len(tokens)
+    vector = dict(Counter(tokens))
+    return json.dumps({'vector': vector, 'topics': topics, 'topic_vector': topic_vector, 'size': size})
+
+
 def process(groups):
     for query in groups.keys():
         if len(query) < 2:
@@ -297,7 +309,7 @@ def process(groups):
     return groups
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='104.131.7.171', port=80)
     #run()
     #print '-' * 33
     #run2()
