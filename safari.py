@@ -19,8 +19,9 @@ from nltk.tokenize.punkt import PunktWordTokenizer
 import numpy as np
 from scipy.spatial.distance import cosine
 
+
 from gensim.models.ldamodel import LdaModel
-lda = LdaModel.load('wikipedia.lda')
+lda = LdaModel.load('/home/noroot/git/LDA-API/wikipedia.lda')
 doc2bow = lda.id2word.doc2bow
 def tfidf2bow(tfidf):
     bow = []
@@ -145,14 +146,6 @@ def get_TFIDF(IDF, isTF=False):
                 print '\t        %.3f*topic%d:' % (prob, tid),
                 print lda.print_topic(tid, topn=8)
 
-            '''
-            topics = lda[tfidfbow]
-            topics.sort(key=itemgetter(1), reverse=True)
-            print '\t  lda(tfidf):'
-            for tid, prob in topics[:4]:
-                print '\t        %.3f*topic%d:' % (prob, tid),
-                print lda.print_topic(tid, topn=5)
-            '''
 
             print
 
@@ -220,12 +213,18 @@ def run2():
     Web1T_TF = get_Web1T_TF()
     get_TFIDF(Web1T_TF, isTF=True)
 
+
 import json
 #import pdb
 from flask import Flask, request
 import cPickle as pickle
 app = Flask(__name__)
 app.debug = True
+
+@app.route('/hi')
+def _hi():
+    return 'hello'
+
 
 @app.route('/', methods=['POST'])
 def _index():
@@ -315,4 +314,5 @@ if __name__ == '__main__':
     #run2()
     #groups = pickle.load(open('data.pickle'))
     #groups = process(groups)
+
 
